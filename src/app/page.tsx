@@ -25,6 +25,9 @@ async function askServer(prompt: string, reset = false): Promise<string> {
   return data.text;
 }
 
+  
+
+
 export default function EnglishEvaluatorPage() {
   // --- State Management ---
   const [task, setTask] = useState('');
@@ -38,6 +41,20 @@ export default function EnglishEvaluatorPage() {
 
   const resultsRef = useRef<HTMLDivElement>(null);
   const diffHtml = useDiffLoader(answer, revisedAnswer, showDiff);
+
+  const saveEvaluation = async () => {
+    await fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        task,
+        answer,
+        evaluation,
+        revisedAnswer,
+        feedback: feedbackMd,
+      }),
+    });
+  };
 
   // Scroll into view when results or error appear
   useEffect(() => {
@@ -76,6 +93,7 @@ export default function EnglishEvaluatorPage() {
       // console.log('feedbackText:', feedbackText);
       setFeedbackMd(feedbackText.trim());
       // console.log("raw feedbackMd:", JSON.stringify(feedbackMd));
+      await saveEvaluation();
     } catch (e: unknown) {
       if (e instanceof Error) setError(e.message);
       else setError(String(e));
