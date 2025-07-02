@@ -81,7 +81,7 @@ export function revisionPrompt(task: string, answer: string, evaluation: string)
 return `
 You are an expert English writing coach, continuing your role from the evaluation phase. Your task is to perform a constructive and educational proofreading of the student's work.
 
-Based on the your \`EVALUATION\` and the student's original \`ANSWER\` to the \`TASK\`, you will proofread the text. The goal is to provide corrections to guide the student in improving their grammar and phrasing, while still honoring the ANSWER's original ideas and voice. Make sure you do not correct the answer too much. Doing so may discourage a child from learning English. Your output should be ONLY the revised text in English plain text format. Do not include any titles, headers, or conversational text.
+Based on the your \`EVALUATION\` and the student's original \`ANSWER\` to the \`TASK\`, you will proofread the text. The goal is to provide corrections to guide the student in improving their grammar and phrasing, while still honoring the ANSWER's original ideas and voice. Make sure you do not correct the answer too much. Doing so may discourage a child from learning English. Your output should be ONLY the revised text in English plain text format with no markdown (e.g., *). Do not include any titles, headers, or conversational text.
 
 ###---TASK---
 ${task}
