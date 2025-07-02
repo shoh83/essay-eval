@@ -1,18 +1,18 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { parseEvaluation, parseRationaleMarkdown } from '../utils/parse';
+// import { parseEvaluation, parseRationaleMarkdown } from '../utils/parse';
 import {
   evaluationPrompt,
   revisionPrompt,
-  rationalePrompt,
+  feedbackPrompt,
 } from '../utils/prompts';
 import { useDiffLoader } from '../hooks/useDiffLoader';
-import { ScoreCircle } from '../components/ScoreCircle';
-import { ScoreBar } from '../components/ScoreBar';
-import { Evaluation } from '../utils/types';
+// import { ScoreCircle } from '../components/ScoreCircle';
+// import { ScoreBar } from '../components/ScoreBar';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkBreaks from 'remark-breaks';
 
 async function askServer(prompt: string, reset = false): Promise<string> {
   const res = await fetch('/api/chat', {
@@ -29,9 +29,9 @@ export default function EnglishEvaluatorPage() {
   // --- State Management ---
   const [task, setTask] = useState('');
   const [answer, setAnswer] = useState('');
-  const [evaluation, setEvaluation] = useState<Evaluation | null>(null);
+  const [evaluation, setEvaluation] = useState<string>('');
   const [revisedAnswer, setRevisedAnswer] = useState('');
-  const [rationaleMd, setRationaleMd] = useState<string>('');
+  const [feedbackMd, setFeedbackMd] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [showDiff, setShowDiff] = useState(false);
@@ -55,27 +55,27 @@ export default function EnglishEvaluatorPage() {
 
     setIsLoading(true);
     setError('');
-    setEvaluation(null);
+    setEvaluation('');
     setRevisedAnswer('');
-    setRationaleMd('');
+    setFeedbackMd('');
     setShowDiff(false);
 
 
     try {
       // 1) Evaluation, with reset=true so server clears history
       const evalText = await askServer(evaluationPrompt(task, answer), true);
-      setEvaluation(parseEvaluation(evalText));
+      setEvaluation(evalText.trim());
       // console.log('Client evalText:', evalText);
 
       // 2) Revision
-      const revText = await askServer(revisionPrompt);
+      const revText = await askServer(revisionPrompt(task, answer, evalText));
       setRevisedAnswer(revText.trim());
 
-      // 3) Rationale
-      const ratText = await askServer(rationalePrompt(answer, revText));
-      // console.log('ratText:', ratText);
-      setRationaleMd(parseRationaleMarkdown(ratText));
-      // console.log('rationaleMd:', rationaleMd);
+      // 3) Feedback
+      const feedbackText = await askServer(feedbackPrompt(task, answer, evalText));
+      // console.log('feedbackText:', feedbackText);
+      setFeedbackMd(feedbackText.trim());
+      // console.log("raw feedbackMd:", JSON.stringify(feedbackMd));
     } catch (e: unknown) {
       if (e instanceof Error) setError(e.message);
       else setError(String(e));
@@ -91,9 +91,9 @@ export default function EnglishEvaluatorPage() {
       <div className="max-w-4xl mx-auto p-6">
         {/* Header */}
         <header className="text-center mb-8">
-          <h1 className="text-4xl font-bold">AI English Writing Coach</h1>
+          <h1 className="text-4xl font-bold">Essay 평가 및 첨삭</h1>
           <p className="mt-2 text-lg text-gray-600">
-            Get instant, expert feedback on your writing.
+            Essay에 대한 평가와 첨삭을 5분 내에 받아보세요
           </p>
         </header>
 
@@ -101,28 +101,28 @@ export default function EnglishEvaluatorPage() {
         <section className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
           <div className="space-y-6">
             <div>
-              <label htmlFor="task" className="block text-sm font-medium mb-1">
-                Writing Task
+              <label htmlFor="task" className="block text-lg font-medium mb-1">
+                주제
               </label>
               <textarea
                 id="task"
                 rows={4}
                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Paste the writing prompt here..."
+                placeholder="Essay 주제를 여기에 입력해주세요."
                 value={task}
                 onChange={(e) => setTask(e.target.value)}
                 disabled={isLoading}
               />
             </div>
             <div>
-              <label htmlFor="answer" className="block text-sm font-medium mb-1">
-                Your Answer
+              <label htmlFor="answer" className="block text-lg font-medium mb-1">
+                Essay
               </label>
               <textarea
                 id="answer"
-                rows={8}
+                rows={20}
                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500"
-                placeholder="Write your response here..."
+                placeholder="작성한 Essay를 여기에 입력해주세요."
                 value={answer}
                 onChange={(e) => setAnswer(e.target.value)}
                 disabled={isLoading}
@@ -134,7 +134,7 @@ export default function EnglishEvaluatorPage() {
             disabled={isLoading}
             className="mt-6 w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
           >
-            {isLoading ? 'Analyzing…' : 'Evaluate My Writing'}
+            {isLoading ? '평가 및 첨삭 진행 중…' : '평가 및 첨삭 시작'}
           </button>
         </section>
 
@@ -151,30 +151,36 @@ export default function EnglishEvaluatorPage() {
               {/* Numeric UI as before */}
               <section className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
                 <h2 className="text-2xl font-bold mb-4">Evaluation</h2>
-                <div className="md:grid md:grid-cols-3 gap-6">
-                  <div className="flex justify-center">
-                    <ScoreCircle score={evaluation.totalScore} />
-                  </div>
-                  <div className="md:col-span-2 space-y-3">
-                    <ScoreBar label="Relevancy" score={evaluation.relevancy} />
-                    <ScoreBar label="Elaboration" score={evaluation.elaboration} />
-                    <ScoreBar label="Syntax" score={evaluation.syntax} />
-                    <ScoreBar label="Vocabulary" score={evaluation.vocabulary} />
-                    <ScoreBar label="Naturalness" score={evaluation.naturalness} />
-                    <ScoreBar label="Grammar" score={evaluation.grammar} />
-                  </div>
-                </div>
-              </section>
-
-              {/* Detailed Feedback as Markdown */}
-              <section className="bg-white p-6 rounded-xl shadow-md border border-gray-200 mt-6">
-                <h2 className="text-2xl font-bold mb-4">Detailed Feedback</h2>
                 <div className="prose prose-sm max-w-none">
-                  
-    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-      {evaluation.detailedFeedback}
-    </ReactMarkdown>
-  </div>
+                  <ReactMarkdown
+  remarkPlugins={[remarkBreaks, remarkGfm]}
+  components={{
+    p(props) {
+      return <p className="mb-4" {...props} />;
+    },
+    table(props) {
+      return (
+        <table
+          className="w-full table-auto border-separate border-spacing-2 border border-gray-200"
+          {...props}
+        />
+      );
+    },
+    th(props) {
+      return (
+        <th className="border border-gray-200 p-3" {...props} />
+      );
+    },
+    td(props) {
+      return (
+        <td className="border border-gray-200 p-3" {...props} />
+      );
+    },
+  }}
+>
+  {evaluation}
+</ReactMarkdown>
+                </div>                
               </section>
             </>
           )}
@@ -188,7 +194,7 @@ export default function EnglishEvaluatorPage() {
                   onClick={() => setShowDiff((prev) => !prev)}
                   className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200"
                 >
-                  {showDiff ? 'Hide Comparison' : 'Compare with Original'}
+                  {showDiff ? '수정 사항 숨기기' : '수정 사항 표시'}
                 </button>
               </div>
               {showDiff ? (
@@ -202,13 +208,21 @@ export default function EnglishEvaluatorPage() {
             </section>
           )}
 
-          {rationaleMd && (
+          {feedbackMd && (
             <section className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
               <h2 className="text-2xl font-bold mb-4">Rationale for Changes</h2>
               <div className="prose prose-sm max-w-none">
-           <ReactMarkdown remarkPlugins={[remarkGfm]}>
-             {rationaleMd}
-           </ReactMarkdown>
+           <ReactMarkdown
+  remarkPlugins={[remarkBreaks, remarkGfm]}
+  components={{
+    p(props) {
+      return <p className="mb-4" {...props} />;
+    },
+    /* your table/th/td custom renderers here… */
+  }}
+>
+  {feedbackMd}
+</ReactMarkdown>
          </div>
             </section>
           )}

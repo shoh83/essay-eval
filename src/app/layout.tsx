@@ -3,8 +3,8 @@ import './globals.css';
 import React from 'react';
 
 export const metadata = {
-  title: 'TOEFL Writing Coach',
-  description: 'Instant AI-powered feedback on your TOEFL writing.',
+  title: 'Essay 평가 및 첨삭',
+  description: 'Essay에 대한 평가와 첨삭을 5분 내에 받아보세요',
 };
 
 export default function RootLayout({
