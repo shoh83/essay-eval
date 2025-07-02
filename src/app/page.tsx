@@ -42,19 +42,23 @@ export default function EnglishEvaluatorPage() {
   const resultsRef = useRef<HTMLDivElement>(null);
   const diffHtml = useDiffLoader(answer, revisedAnswer, showDiff);
 
-  const saveEvaluation = async () => {
-    await fetch('/api/save', {
+  async function saveEvaluation(payload: {
+    task: string;
+    answer: string;
+    evaluation: string;
+    revisedAnswer: string;
+    feedback: string;
+  }) {
+    const res = await fetch('/api/save', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        task,
-        answer,
-        evaluation,
-        revisedAnswer,
-        feedback: feedbackMd,
-      }),
+      body: JSON.stringify(payload),
     });
-  };
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.error || 'Save failed');
+    }
+  }
 
   // Scroll into view when results or error appear
   useEffect(() => {
@@ -66,7 +70,7 @@ export default function EnglishEvaluatorPage() {
   // --- Main Handler ---
   const handleSubmit = async () => {
     if (!task.trim() || !answer.trim()) {
-      setError('Please provide both the task and your answer.');
+      setError('주제와 Essay를 모두 입력해주세요.');
       return;
     }
 
@@ -93,7 +97,14 @@ export default function EnglishEvaluatorPage() {
       // console.log('feedbackText:', feedbackText);
       setFeedbackMd(feedbackText.trim());
       // console.log("raw feedbackMd:", JSON.stringify(feedbackMd));
-      await saveEvaluation();
+      await saveEvaluation({
+        task,
+        answer,
+        evaluation: evalText,
+        revisedAnswer: revText,
+        feedback: feedbackText,
+     });
+      // console.log('✅ Saved successfully');
     } catch (e: unknown) {
       if (e instanceof Error) setError(e.message);
       else setError(String(e));

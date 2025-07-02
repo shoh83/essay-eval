@@ -3,8 +3,10 @@ import { NextResponse } from 'next/server';
 import { db } from '../../lib/db';
 
 export async function POST(req: Request) {
-  const { task, answer, evaluation, revisedAnswer, feedback } =
-    await req.json();
+    const body = await req.json();
+//   console.log('→ [/api/save] payload:', body);
+
+  const { task, answer, evaluation, revisedAnswer, feedback } = body;
 
   if (!task || !answer || !evaluation || !revisedAnswer || !feedback) {
     return NextResponse.json(
