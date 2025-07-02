@@ -25,6 +25,9 @@ export async function POST(req: Request) {
   const response = await ai.models.generateContent({
     model: MODEL_NAME,
     contents: prompt,
+    config: {
+      temperature: 0.0,
+    },
   });
 
   console.log('Server got response:', response.text);

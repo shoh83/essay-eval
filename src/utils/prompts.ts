@@ -17,27 +17,26 @@ You will score each of the following criteria on their respective point range. N
 OVERALL GRADE: (A+ the highest, F the lowest)
 
 VOCABULARY
-- Word-Spellings (0-3)
-- Difficulty Level Used (0-4)
-- Appropriate Word Usage (0-8)
+- Word Spellings (0-4)
+- Difficulty Level Used (0-6)
+- Appropriate Word Usage (0-10)
 
 SENTENCE
-- Grammatical Errors (0-10)
-- Level of Sentence Structure & Construction (0-10)
+- Grammatical Completion (0-7)
+- Clarity & Vividness (0-4)
+- Level of Sentence Structure & Construction (0-6)
 
 STRUCTURE
-- Completion / Organization of Introduction (0-10)
-- Completion / Organization of Body I & II (0-8)
-- Completion / Organization of Conclusion (0-7)
+- Completion & Organization of Introduction (0-8)
+- Completion & Organization of Body (0-6)
+- Completion & Organization of Conclusion (0-4)
 
 CONTENTS
-- Thesis / Supports / Topics / Examples / Summary (0-6)
-- Logical Flow / Idea Coherence / Relevance (0-8)
-- Accuracy & Authenticity of Knowledge Applied (0-4)
-- Sentence Clarity / Ambiguity (0-5)
-- Critical Thinking (0-4)
-- Rephrased Expressions Intro / Body / Conclusion (0-9)
-- Overall Comprehension (0-4)
+- Thesis/Supportive Ideas/Examples/Paraphrasing (0-15)
+- Idea Consistency & Coherence (0-10)
+- Accuracy & Authenticity of Knowledge Applied (0-8)
+- Logical Flow & Critical Thinking (0-7)
+- Overall Comprehension (Persuasive Enough?) (0-5)
 
 EVALUATION: [SUM OF ALL POINTS EARNED)
 
@@ -48,7 +47,7 @@ ${task}
 ${answer}
 
 ###---FORMAT---
-Your output must begin *directly* with the following line, with no preceding text.
+For points, put a number without "/" and use up to one decimal points. Your output must begin *directly* with the following line, with no preceding text.
 
 **OVERALL GRADE: (A+ the highest, F the lowest)**
 
@@ -56,21 +55,20 @@ Your output must begin *directly* with the following line, with no preceding tex
 
 |      Item      |                      Module                      |         Points Earned          |
 | :------------: | :----------------------------------------------- | :----------------------------: |
-|   VOCABULARY   | Word-Spellings                                   |            [Points]            |
+|   VOCABULARY   | Word Spellings                                   |            [Points]            |
 |                | Difficulty Level Used                            |            [Points]            |
 |                | Appropriate Word Usage                           |            [Points]            |
-|    SENTENCE    | Grammatical Errors                               |            [Points]            |
+|    SENTENCE    | Grammatical Completion                           |            [Points]            |
+|                | Clarity & Vividness                              |            [Points]            |
 |                | Level of Sentence Structure & Construction       |            [Points]            |
-|   STRUCTURE    | Completion / Organization of Introduction        |            [Points]            |
-|                | Completion / Organization of Body I & II         |            [Points]            |
-|                | Completion / Organization of Conclusion          |            [Points]            |
-|    CONTENTS    | Thesis / Supports / Topics / Examples / Summary  |            [Points]            |
-|                | Logical Flow / Idea Coherence / Relevance        |            [Points]            |
+|   STRUCTURE    | Completion & Organization of Introduction        |            [Points]            |
+|                | Completion & Organization of Body                |            [Points]            |
+|                | Completion & Organization of Conclusion          |            [Points]            |
+|    CONTENTS    | Thesis/Supportive Ideas/Examples/Paraphrasing    |            [Points]            |
+|                | Idea Consistency & Coherence                     |            [Points]            |
 |                | Accuracy & Authenticity of Knowledge Applied     |            [Points]            |
-|                | Sentence Clarity / Ambiguity                     |            [Points]            |
-|                | Critical Thinking                                |            [Points]            |
-|                | Rephrased Expressions Intro / Body / Conclusion  |            [Points]            |
-|                | Overall Comprehension                            |            [Points]            |
+|                | Logical Flow & Critical Thinking                 |            [Points]            |
+|                | Overall Comprehension (Persuasive Enough?)       |            [Points]            |
 | **EVALUATION** |                                                  | **[SUM OF ALL POINTS EARNED]** |
 `.trim();
 }
