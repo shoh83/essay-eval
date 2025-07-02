@@ -189,7 +189,7 @@ export default function EnglishEvaluatorPage() {
           {revisedAnswer && (
             <section className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-2xl font-bold">Revised Text</h2>
+                <h2 className="text-2xl font-bold">첨삭</h2>
                 <button
                   onClick={() => setShowDiff((prev) => !prev)}
                   className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-100 rounded-lg hover:bg-blue-200"
@@ -210,7 +210,7 @@ export default function EnglishEvaluatorPage() {
 
           {feedbackMd && (
             <section className="bg-white p-6 rounded-xl shadow-md border border-gray-200">
-              <h2 className="text-2xl font-bold mb-4">Rationale for Changes</h2>
+              <h2 className="text-2xl font-bold mb-4">Feedback</h2>
               <div className="prose prose-sm max-w-none">
            <ReactMarkdown
   remarkPlugins={[remarkBreaks, remarkGfm]}
