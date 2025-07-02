@@ -1,0 +1,59 @@
+/* src/app/globals.css */
+
+@import "tailwindcss";
+
+/* Your custom base styles and variables come AFTER the import */
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.prose ul {
+  /* Restore the left padding to make space for bullets */
+  padding-left: 1.75em; /* Adjust this value if needed */
+}
+
+.prose ul > li {
+  /* Force the bullet point style */
+  list-style-type: disc;
+  margin-top: 0.5em; 
+}
+
+.prose ol {
+  /* Restore the left padding to make space for bullets */
+  padding-left: 1.75em; /* Adjust this value if needed */
+}
+
+.prose ol > li {
+  /* Force the bullet point style */
+  list-style-type: number;
+  margin-top: 0.5em; 
+}
+
+.diff-container del {
+  background-color: #fff0f0; /* Light red background */
+  color: #c00;            /* Darker red text for contrast */
+  text-decoration: line-through;
+  padding: 2px 1px;
+  border-radius: 3px;
+}
+
+.diff-container ins {
+  background-color: #e6ffed; /* Light green background */
+  color: #0d6d0f;          /* Darker green text for contrast */
+  text-decoration: none;     /* Remove default underline */
+  padding: 2px 1px;
+  border-radius: 3px;
+}
