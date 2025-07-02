@@ -161,7 +161,7 @@ export default function EnglishEvaluatorPage() {
           <button
             onClick={handleSubmit}
             disabled={isLoading}
-            className="mt-6 w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
+            className="mt-6 w-full bg-[#fa7f3b] text-white font-bold py-3 rounded-lg hover:bg-[#e67330] disabled:opacity-50"
           >
             {isLoading ? '평가 및 첨삭 진행 중…' : '평가 및 첨삭 시작'}
           </button>
