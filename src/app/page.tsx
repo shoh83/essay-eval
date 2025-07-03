@@ -79,7 +79,7 @@ export default function EnglishEvaluatorPage() {
     setEvaluation('');
     setRevisedAnswer('');
     setFeedbackMd('');
-    setShowDiff(false);
+    setShowDiff(true);
 
 
     try {

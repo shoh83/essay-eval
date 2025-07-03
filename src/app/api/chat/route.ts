@@ -31,5 +31,6 @@ export async function POST(req: Request) {
   });
 
   console.log('Server got response:', response.text);
+  console.log('Usage Metadata:', response.usageMetadata);
   return NextResponse.json({ text: response.text ?? '' });
 }
